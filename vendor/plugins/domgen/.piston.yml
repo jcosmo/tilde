@@ -1,0 +1,8 @@
+--- 
+repository_url: git://github.com/stocksoftware/domgen.git
+lock: false
+repository_class: Piston::Git::Repository
+format: 1
+handler: 
+  commit: d50b0d5f5f7941febd53195db1a9e564a6f2ea8a
+  branch: master

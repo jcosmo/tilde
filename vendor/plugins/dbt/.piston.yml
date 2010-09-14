@@ -1,0 +1,8 @@
+--- 
+repository_url: git://github.com/stocksoftware/dbt.git
+lock: false
+repository_class: Piston::Git::Repository
+format: 1
+handler: 
+  commit: db663c5111580d0386f6f4b9e5d9f3a0a5cd4ccb
+  branch: master

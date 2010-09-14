@@ -8,3 +8,7 @@ artifacts:
   ipojo_eventadmin: org.apache.felix:org.apache.felix.ipojo.handler.eventadmin:jar:1.6.0
   osgi_core: org.apache.felix:org.osgi.core:jar:1.4.0
   osgi_compendium: org.apache.felix:org.osgi.compendium:jar:1.4.0
+  hibernate_persistence: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:jar:1.0.0.Final
+  hibernate_annotation: org.hibernate:hibernate-annotations:jar:3.5.3-Final
+  hibernate_validator: org.hibernate:hibernate-validator:jar:4.0.2.GA
+  javax_validation: javax.validation:validation-api:jar:1.0.0.GA
