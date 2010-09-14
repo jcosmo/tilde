@@ -1,3 +1,5 @@
 tide.iml
 tide.ipr
 tide.iws
+target
+target/**/*
