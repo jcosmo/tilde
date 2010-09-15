@@ -23,3 +23,4 @@ artifacts:
   jcl_over_slf4j: org.slf4j:jcl-over-slf4j:jar:1.5.8
   commons_collections: commons-collections:commons-collections:jar:3.1
   antlr: antlr:antlr:jar:2.7.6
+  jtds: net.sourceforge.jtds:jtds:jar:1.2.4

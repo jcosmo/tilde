@@ -43,13 +43,14 @@ DbTasks.add_database :core, [:Core],
                      :schema_overrides => {:Core => :dbo}
 
 desc 'Tide: Time Sheet Management'
-define 'tide' do
+define 'tilde' do
   compile.with :osgi_core,
                :osgi_compendium,
                Buildr::Ipojo.annotation_artifact,
                :ipojo_eventadmin,
                JPA,
-               SLF4J
+               SLF4J,
+               :jtds
   compile.from _(:target, :generated, :java)
 
 
@@ -86,6 +87,9 @@ define 'tide' do
     artifacts(compile.dependencies).each{|art| cp( art.name, _(:target)); p "Copied #{art.name}"  }
   end
 
+  task :run do
+    Java::Commands.java "Main", :classpath => compile.dependencies
+  end
 
 =begin
   package(:jar).with(
