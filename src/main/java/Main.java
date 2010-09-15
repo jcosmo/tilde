@@ -1,28 +1,20 @@
 import Core.Client;
 import Core.ClientDAO;
 import Core.SchemaEntityManager;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 
 public class Main
 {
   public static void main( final String[] args )
+    throws IOException
   {
-    final Map<String, Object> overrides = new HashMap<String, Object>();
-    overrides.put( "javax.persistence.provider", "org.apache.openjpa.persistence.PersistenceProviderImpl" );
-    overrides.put( "javax.persistence.jdbc.driver", "net.sourceforge.jtds.jdbc.Driver" );
-    overrides.put( "javax.persistence.jdbc.user", "sa" );
-    overrides.put( "javax.persistence.jdbc.password", "password" );
-    overrides.put( "javax.persistence.jdbc.url",
-                   "jdbc:jtds:sqlserver://localhost/tide_dev;instance=sqlexpress" );
-
-    final EntityManagerFactory emf =
-      Persistence.createEntityManagerFactory( "tide", overrides );
+    final Properties jdbcProperties = new Properties();
+    jdbcProperties.load( Main.class.getResourceAsStream( "database.properties" ) );
+    final EntityManagerFactory emf = Persistence.createEntityManagerFactory( "tide", jdbcProperties );
 
     final EntityManager em = emf.createEntityManager();
     SchemaEntityManager.bind( em );
