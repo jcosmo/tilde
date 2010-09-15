@@ -1,6 +1,6 @@
-import core.Clients;
-import core.ClientsDAO;
-import core.SchemaEntityManager;
+import Core.Client;
+import Core.ClientDAO;
+import Core.SchemaEntityManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class Main
     overrides.put( "javax.persistence.provider", "org.apache.openjpa.persistence.PersistenceProviderImpl" );
     overrides.put( "javax.persistence.jdbc.driver", "net.sourceforge.jtds.jdbc.Driver" );
     overrides.put( "javax.persistence.jdbc.user", "sa" );
-    overrides.put( "javax.persistence.jdbc.password", "Womble)1" );
+    overrides.put( "javax.persistence.jdbc.password", "password" );
     overrides.put( "javax.persistence.jdbc.url",
                    "jdbc:jtds:sqlserver://localhost/tide_dev;instance=sqlexpress" );
 
@@ -27,7 +27,7 @@ public class Main
     final EntityManager em = emf.createEntityManager();
     SchemaEntityManager.bind( em );
 
-    for ( Clients client : ClientsDAO.findAll() )
+    for ( Client client : ClientDAO.findAll() )
     {
       System.out.println( "Found a client: " + client.getName() );
     }
