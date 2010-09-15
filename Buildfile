@@ -1,9 +1,6 @@
 require 'buildr_bnd'
 require 'buildr_iidea'
 require 'buildr_ipojo'
-require "buildr/openjpa"
-
-include Buildr::OpenJPA
 
 Dir.new("vendor/plugins").reject{|x| %w(. ..).include?(x)}.each{ |x| $: << "vendor/plugins/#{x}/lib"}
 
