@@ -1,0 +1,16 @@
+= tilde
+
+A project to play with JPA2 in an OSGi container, and the use of domgen/db_tasks.
+
+= Using
+
+* You will have to create a database by hand at this time
+* Copy the file src/main/resources/database.example.properties to src/main/resources/database.properties and edit
+* buildr domgen:sql   <-- to create databases/generated/Core/schema.sql, which you can run in your db
+* buildr domgen:jpa   <-- to create the JPA classes
+* buildr run          <-- to run
+
+== TODO
+
+* Start using db_tasks to create the database
+* Deploy as a bundle
