@@ -16,10 +16,10 @@ public class Main
     final Map<String, Object> overrides = new HashMap<String, Object>();
     overrides.put( "javax.persistence.provider", "org.apache.openjpa.persistence.PersistenceProviderImpl" );
     overrides.put( "javax.persistence.jdbc.driver", "net.sourceforge.jtds.jdbc.Driver" );
-    overrides.put( "javax.persistence.jdbc.user", "stock-dev" );
-    overrides.put( "javax.persistence.jdbc.password", "letmein" );
+    overrides.put( "javax.persistence.jdbc.user", "sa" );
+    overrides.put( "javax.persistence.jdbc.password", "Womble)1" );
     overrides.put( "javax.persistence.jdbc.url",
-                   "jdbc:jtds:sqlserver://vw-firesql-104.fire.dse.vic.gov.au/JW45_TILDE_DEV;appName=iris_app;instance=mssql01" );
+                   "jdbc:jtds:sqlserver://localhost/tide_dev;instance=sqlexpress" );
 
     final EntityManagerFactory emf =
       Persistence.createEntityManagerFactory( "tide", overrides );
