@@ -1,6 +1,6 @@
-tide.iml
-tide.ipr
-tide.iws
+*.iml
+*.ipr
+*.iws
 target
 target/**/*
 databases/generated

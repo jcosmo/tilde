@@ -1,6 +1,9 @@
 require 'buildr_bnd'
 require 'buildr_iidea'
 require 'buildr_ipojo'
+require "buildr/openjpa"
+
+include Buildr::OpenJPA
 
 Dir.new("vendor/plugins").reject{|x| %w(. ..).include?(x)}.each{ |x| $: << "vendor/plugins/#{x}/lib"}
 
@@ -14,23 +17,42 @@ repositories.remote << 'https://repository.apache.org/content/repositories/relea
 repositories.remote << 'http://repository.springsource.com/maven/bundles/external'
 repositories.remote << 'http://repository.jboss.com/maven2' # Hibernate
 repositories.remote << 'http://repository.code-house.org/content/repositories/release' # OSGi - jmx RI
-
 repositories.remote << Buildr::Bnd.remote_repository
 repositories.remote << Buildr::Ipojo.remote_repository
 
 KARAF_DIR="../apache-karaf-2.0.1-SNAPSHOT/"
-JPA = [:hibernate_persistence,
-       :hibernate_annotation,
-       :javax_transaction,
-       :javax_validation,
-       :hibernate_validator,
-       :hibernate_entitymanager,
-       :hibernate_core,
-       :dom4j,
-       :hibernate_commons_annotations,
-       :javassist,
-       :commons_collections,
-       :antlr]
+
+HIBERNATE = [
+  :hibernate_persistence,
+  :javax_transaction,
+  :javax_validation,
+  :dom4j,
+  :javassist,
+  :commons_collections,
+  :commons_lang,
+  :hibernate_validator,
+  :antlr,
+  :hibernate_persistence,
+  :hibernate_entitymanager,
+  :hibernate_core,
+  :hibernate_commons_annotations,
+  :hibernate_annotation]
+
+OPENJPA = [
+  'commons-collections:commons-collections:jar:3.2.1',
+  'commons-lang:commons-lang:jar:2.4',
+  'commons-beanutils:commons-beanutils:jar:1.8.3',
+  'commons-pool:commons-pool:jar:1.5.3',
+  'org.apache.geronimo.specs:geronimo-jms_1.1_spec:jar:1.1.1',
+  'org.apache.geronimo.specs:geronimo-jpa_2.0_spec:jar:1.0',
+  'org.apache.geronimo.specs:geronimo-jta_1.1_spec:jar:1.1.1',
+  'org.apache.geronimo.specs:geronimo-validation_1.0_spec:jar:1.0',
+  'org.apache.bval:org.apache.bval.bundle:jar:0.2-incubating',
+  'net.sourceforge.serp:serp:jar:1.13.1',
+  'javax.validation:validation-api:jar:1.0.0.GA',
+  'org.apache.openjpa:openjpa:jar:2.0.1',
+  ]
+
 SLF4J = [:slf4j_api, :slf4j_jdk14, :jcl_over_slf4j]
 
 DbTasks::Config.app_version = VERSION_NUMBER
@@ -48,19 +70,18 @@ define 'tilde' do
                :osgi_compendium,
                Buildr::Ipojo.annotation_artifact,
                :ipojo_eventadmin,
-               JPA,
+               #HIBERNATE,
+               OPENJPA,
                SLF4J,
                :jtds
   compile.from _(:target, :generated, :java)
 
+  # Only want this if using OPENJPA
+  compile { open_jpa_enhance }
 
   project.version = VERSION_NUMBER
   project.group = GROUP
   ipr.template = _('src/etc/project-template.ipr')
-
-#  package(:bundle).tap do |bnd|
-#    bnd['Export-Package'] = "com.stocksoftware.tide.*;version=#{version}"
-#  end
 
   desc "Deploy files built by this project to a Karaf instance"
   task :deploy_to_karaf do
@@ -90,34 +111,6 @@ define 'tilde' do
   task :run do
     Java::Commands.java "Main", :classpath => compile.dependencies
   end
-
-=begin
-  package(:jar).with(
-      :manifest => _('src/etc/MANIFEST.MF')
-    ).tap do |jar|
-      jar.include artifacts(compile.dependencies).map{|art| art.name}
-    end
-
-  package(:jar).with(
-      :manifest => { 'Class-Path' => artifacts(compile.dependencies).map{|art| art.name.split(/\//)[-1]}.join(' ')}
-    ).tap do |jar|
-      jar.include artifacts(compile.dependencies).map{|art| art.name}
-    end
-  def add_dependencies(pkg)
-    tempfile = pkg.to_s.sub(/.jar$/, "-without-dependencies.jar")
-    mv pkg.to_s, tempfile
-
-    dependencies = compile.dependencies.map { |d| "-c #{d}"}.join(" ")
-    sh "java -jar tools/autojar.jar -baev -o #{pkg} #{dependencies} #{tempfile}"
-  end
-
-  def merge_dependencies(pkg)
-    dependencies = artifacts(compile.dependencies).each { |d| pkg.merge(d.name); p "Merged #{d}" }
-  end
-
-  package(:jar).enhance { |pkg| pkg.enhance { |pkg| merge_dependencies(pkg) }}
-=end
-
 end
 
 Domgen::LoadSchema.new(File.expand_path("databases/schema_set.rb"))

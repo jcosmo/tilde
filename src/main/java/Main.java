@@ -14,6 +14,7 @@ public class Main
   public static void main( final String[] args )
   {
     final Map<String, Object> overrides = new HashMap<String, Object>();
+    overrides.put( "javax.persistence.provider", "org.apache.openjpa.persistence.PersistenceProviderImpl" );
     overrides.put( "javax.persistence.jdbc.driver", "net.sourceforge.jtds.jdbc.Driver" );
     overrides.put( "javax.persistence.jdbc.user", "stock-dev" );
     overrides.put( "javax.persistence.jdbc.password", "letmein" );
@@ -25,15 +26,6 @@ public class Main
 
     final EntityManager em = emf.createEntityManager();
     SchemaEntityManager.bind( em );
-
-    final TypedQuery<Clients> namedQuery = em.createNamedQuery( "Clients.findAll", Clients.class );
-    final List<Clients> resultList = namedQuery.getResultList();
-    for ( Clients client : resultList )
-    {
-      System.out.println( "Found a client: " + client.getName() );
-    }
-
-    System.out.println( "And also:" );
 
     for ( Clients client : ClientsDAO.findAll() )
     {
