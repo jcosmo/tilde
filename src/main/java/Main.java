@@ -22,7 +22,7 @@ public class Main
                    "jdbc:jtds:sqlserver://vw-firesql-104.fire.dse.vic.gov.au/JW45_TILDE_DEV;appName=iris_app;instance=mssql01" );
 
     final EntityManagerFactory emf =
-      Persistence.createEntityManagerFactory( "main", overrides );
+      Persistence.createEntityManagerFactory( "tide", overrides );
 
     final EntityManager em = emf.createEntityManager();
     SchemaEntityManager.bind( em );

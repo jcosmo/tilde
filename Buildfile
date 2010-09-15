@@ -77,7 +77,7 @@ define 'tilde' do
   compile.from _(:target, :generated, :java)
 
   # Only want this if using OPENJPA
-  compile { open_jpa_enhance }
+  compile { open_jpa_enhance( :properties=>path_to(:target, :generated, :resources, 'META-INF/persistence.xml' )) }
 
   project.version = VERSION_NUMBER
   project.group = GROUP
@@ -109,7 +109,7 @@ define 'tilde' do
   end
 
   task :run do
-    Java::Commands.java "Main", :classpath => compile.dependencies
+    Java::Commands.java "Main", :classpath => artifacts([compile.dependencies, project('tilde')])
   end
 end
 
