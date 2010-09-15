@@ -3,3 +3,4 @@ tide.ipr
 tide.iws
 target
 target/**/*
+databases/generated
