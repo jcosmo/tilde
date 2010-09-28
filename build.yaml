@@ -1,0 +1,23 @@
+gems:
+  #- ci_reporter
+  - buildr-bnd = 0.0.5
+  - buildr-iidea = 0.0.9
+
+artifacts:
+  core: org.eclipse.persistence:org.eclipse.persistence.core:jar:2.1.1
+  jpa: org.eclipse.persistence:org.eclipse.persistence.jpa:jar::2.1.1
+  asm: org.eclipse.persistence:org.eclipse.persistence.asm:jar::2.1.1
+  antlr: org.eclipse.persistence:org.eclipse.persistence.antlr:jar::2.1.1
+  persistence: org.eclipse.persistence:javax.persistence:jar::2.0.2
+  derby: org.apache.derby:derby:jar:10.6.1.0
+  derbytools: org.apache.derby:derbytools:jar:10.6.1.0
+
+repositories:
+  remote:
+   - http://www.stocksoftware.com.au/repositories/external
+   - http://www.stocksoftware.com.au/repositories/releases
+   - http://mirror.aarnet.edu.au/pub/eclipse/rt/eclipselink/maven.repo
+   - https://repository.apache.org/content/repositories/releases
+   - http://www.ibiblio.org/maven2
+   - http://www.aQute.biz/repo
+  
