@@ -3,6 +3,7 @@ Domgen.define_schema_set(:tide) do |ss|
   ss.define_generator(:jpa)
 
   ss.define_schema("Core") do |s|
+    s.java.package = 'au.com.stocksoftware.tide.model'
     s.sql.schema = 'dbo'
     s.define_object_type(:Client) do |t|
       t.integer(:ID, :primary_key => true)

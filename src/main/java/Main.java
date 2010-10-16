@@ -1,6 +1,6 @@
-import Core.Client;
-import Core.ClientDAO;
-import Core.SchemaEntityManager;
+import au.com.stocksoftware.tide.model.Client;
+import au.com.stocksoftware.tide.model.ClientDAO;
+import au.com.stocksoftware.tide.model.SchemaEntityManager;
 import java.io.IOException;
 import java.util.Properties;
 import javax.persistence.EntityManager;

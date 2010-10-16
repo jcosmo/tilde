@@ -5,3 +5,6 @@ target
 target/**/*
 databases/generated
 src/main/resources/database.properties
+derby.log
+reports
+reports/**/*
