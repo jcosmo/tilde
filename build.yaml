@@ -20,6 +20,7 @@ artifacts:
  jcl_over_slf4j: org.slf4j:jcl-over-slf4j:jar:1.5.8
  commons_lang: commons-lang:commons-lang:jar:2.4
  commons_butils: commons-beanutils:commons-beanutils:jar:1.8.3
+ jtds: net.sourceforge.jtds:jtds:jar:1.2.4
 
 repositories:
  remote:
