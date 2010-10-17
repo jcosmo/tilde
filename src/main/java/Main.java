@@ -13,7 +13,7 @@ public class Main
     throws IOException
   {
     final Properties jdbcProperties = new Properties();
-    jdbcProperties.load( Main.class.getResourceAsStream( "database.properties" ) );
+    jdbcProperties.load( Main.class.getResourceAsStream( "/database.properties" ) );
     final EntityManagerFactory emf = Persistence.createEntityManagerFactory( "tide", jdbcProperties );
 
     final EntityManager em = emf.createEntityManager();

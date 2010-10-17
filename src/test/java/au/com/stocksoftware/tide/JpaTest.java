@@ -87,4 +87,21 @@ public class JpaTest
 
     em.close();
   }
+
+  @Test
+  public void checkWeHaveFindAll()
+  {
+    // Now lets check the database and see if the created entries are there
+    // Create a fresh, new EntityManager
+    final EntityManager em = factory.createEntityManager();
+
+    // Perform a simple query for all the Message entities
+    final TypedQuery<Client> query = em.createNamedQuery( "Client.findAll", Client.class );
+
+    // We should have bob!
+    assertTrue( query.getResultList().size() == 1 );
+    assertEquals( "Bob the Builder", query.getResultList().get(0).getName() );
+
+    em.close();
+  }
 }
