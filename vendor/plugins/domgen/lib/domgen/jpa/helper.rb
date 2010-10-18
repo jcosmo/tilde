@@ -281,6 +281,9 @@ STR
     }
   }
 
+/*
+  This is currently causing failure when using validations, as the hashcode is called during validation
+
   @Override
   public int hashCode()
   {
@@ -290,6 +293,7 @@ STR
     }
     return getID().hashCode();
   }
+*/
 JAVA
       end
 
