@@ -1,10 +1,9 @@
 require 'buildr_bnd'
 require 'buildr_iidea'
 
-Dir.new("vendor/plugins").reject{|x| %w(. ..).include?(x)}.each{ |x| $: << "vendor/plugins/#{x}/lib"}
+$: << "vendor/plugins/dbt/lib"
 
 require 'db_tasks.rb'
-require 'domgen.rb'
 
 VERSION_NUMBER = "1.0.0-SNAPSHOT"
 
@@ -24,7 +23,6 @@ define 'tilde' do
   project.version = VERSION_NUMBER
   project.group = 'au.com.stocksoftware.tide'
 
-  project.resources.from _(:target, :generated, :resources)
   compile.options.source = '1.6'
   compile.options.target = '1.6'
   compile.options.lint = 'all'
@@ -36,6 +34,8 @@ define 'tilde' do
 
   ipr.template = _('src/etc/project-template.ipr')
 
+  domgen_gen( project ) 
+  
   desc "Deploy files built by this project to a Karaf instance"
   task :deploy_to_karaf do
     deployment_artifacts =
@@ -52,9 +52,7 @@ define 'tilde' do
   package(:jar).with(
       :manifest => { 'Class-Path' => artifacts(compile.dependencies).map{|art| art.name.split(/\//)[-1]}.join(' '),
                      'Main-Class' => 'Main'}
-    ).tap do |jar|
-      jar.meta_inf << _(:target, :generated, :resources, 'META-INF', 'persistence.xml')
-    end
+    )
 
   desc "Copies all dependencies to target dir to make running stuff easier"
   task :copy_deps_to_target do
@@ -64,10 +62,4 @@ define 'tilde' do
   task :run do
     Java::Commands.java "Main", :classpath => artifacts([compile.dependencies, project('tilde')])
   end
-end
-
-Domgen::LoadSchema.new(File.expand_path("databases/schema_set.rb"))
-Domgen::GenerateTask.new(:tide, :jpa, [:jpa], "target/generated")
-Domgen::GenerateTask.new(:tide, :sql, [:sql], "databases/generated") do |t|
-  t.clobber_dir = false
 end
