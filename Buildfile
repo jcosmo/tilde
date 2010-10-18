@@ -60,6 +60,6 @@ define 'tilde' do
   end
 
   task :run do
-    Java::Commands.java "Main", :classpath => artifacts([compile.dependencies, project('tilde')])
+    Java::Commands.java "Main", :classpath => artifacts([compile.dependencies, project('tilde'), :jtds])
   end
 end
