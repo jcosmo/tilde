@@ -25,13 +25,4 @@ define 'tilde' do
       :manifest => { 'Class-Path' => artifacts(compile.dependencies).map{|art| art.name.split(/\//)[-1]}.join(' '),
                      'Main-Class' => 'Main'}
     )
-
-  desc "Copies all dependencies to target dir to make running stuff easier"
-  task :copy_deps_to_target do
-    artifacts(compile.dependencies).each{|art| cp( art.name, _(:target)); p "Copied #{art.name}"  }
-  end
-
-  task :run do
-    Java::Commands.java "Main", :classpath => artifacts([compile.dependencies, project('tilde'), :jtds])
-  end
 end
