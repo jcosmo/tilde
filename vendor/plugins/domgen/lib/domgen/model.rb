@@ -35,7 +35,11 @@ module Domgen
   end
 
   class BaseConfigElement
+
+    attr_accessor :tags
+
     def initialize(options = {})
+      @tags = {}
       self.options = options
       yield self if block_given?
     end
@@ -54,7 +58,16 @@ module Domgen
       end
     end
 
+    def tag(name, value)
+      @tags[name] = value
+    end
+
+    def description(value)
+      tag(:Description, value)
+    end
+
     @@extensions = {}
+
     def self.extensions
       @@extensions[self.name] ||= []
     end
@@ -189,10 +202,10 @@ module Domgen
     def generated_value?
       if @generated_value.nil?
         @generated_value = primary_key? &&
-                self.attribute_type == :integer &&
-                !object_type.abstract? &&
-                object_type.final? &&
-                object_type.extends.nil?
+          self.attribute_type == :integer &&
+          !object_type.abstract? &&
+          object_type.final? &&
+          object_type.extends.nil?
       end
       @generated_value
     end
@@ -374,7 +387,7 @@ module Domgen
         end
       end
 
-      error("ObjectType #{name} must define exactly one primary key") if attributes.select {|a| a.primary_key?}.size != 1
+      error("ObjectType #{name} must define exactly one primary key") if attributes.select { |a| a.primary_key? }.size != 1
       attributes.each do |a|
         error("Abstract attribute #{a.name} on non abstract object type #{name}") if !abstract? && a.abstract?
       end
@@ -412,7 +425,7 @@ module Domgen
 
     def integer(name, options = {}, &block)
       attribute(name, :integer, options, &block)
-      end
+    end
 
     def real(name, options = {}, &block)
       attribute(name, :real, options, &block)
@@ -454,13 +467,13 @@ module Domgen
       error("Duplicate values detected for s_enum #{name}") if values.values.uniq.size != values.size
       sorted_values = values.values.sort
 
-      length = sorted_values.inject(0) {|max, value| max > value.length ? max : value.length }
+      length = sorted_values.inject(0) { |max, value| max > value.length ? max : value.length }
 
       attribute(name, :s_enum, options.merge({:values => values, :length => length}), &block)
     end
 
     def declared_attributes
-      @attributes.values.select{|a|!a.inherited?}
+      @attributes.values.select { |a| !a.inherited? }
     end
 
     def attributes
@@ -503,7 +516,7 @@ module Domgen
     def dependency_constraint(attribute_name, dependent_attribute_names, options = {}, &block)
       name = "#{attribute_name}_#{attribute_names_to_key(dependent_attribute_names)}"
       error("Dependency constraint #{name} on #{self.name} has an illegal non nullable attribute") if !attribute_by_name(attribute_name).nullable?
-      dependent_attribute_names.collect{|a|attribute_by_name(a)}.each do |a|
+      dependent_attribute_names.collect { |a| attribute_by_name(a) }.each do |a|
         error("Dependency constraint #{name} on #{self.name} has an illegal non nullable dependent attribute") if !a.nullable?
       end
       dependency_constraint = DependencyConstraint.new(name, attribute_name, dependent_attribute_names, options, &block)
@@ -518,7 +531,7 @@ module Domgen
     # Check that either all attributes are null or all are not null
     def codependent_constraint(attribute_names, options = {}, &block)
       name = attribute_names_to_key(attribute_names)
-      attribute_names.collect{|a|attribute_by_name(a)}.each do |a|
+      attribute_names.collect { |a| attribute_by_name(a) }.each do |a|
         error("Codependent constraint #{name} on #{self.name} has an illegal non nullable attribute") if !a.nullable?
       end
       codependent_constraint = AttributeSetConstraint.new(name, attribute_names, options, &block)
@@ -533,7 +546,7 @@ module Domgen
     # Check that at most one of the attributes is not null
     def incompatible_constraint(attribute_names, options = {}, &block)
       name = attribute_names_to_key(attribute_names)
-      attribute_names.collect{|a|attribute_by_name(a)}.each do |a|
+      attribute_names.collect { |a| attribute_by_name(a) }.each do |a|
         error("Incompatible constraint #{name} on #{self.name} has an illegal non nullable attribute") if !a.nullable?
       end
       incompatible_constraint = AttributeSetConstraint.new(name, attribute_names, options, &block)
@@ -548,7 +561,7 @@ module Domgen
     # Constraint that ensures that the value of a particular value is within a particular scope
     def scope_constraint(attribute_name, attribute_name_path, options = {}, &block)
       error("Scope constraint must have a path of length 1 or more") if attribute_name_path.empty?
-      name = ([attribute_name] + attribute_name_path).collect{|a|a.to_s}.sort.join('_')
+      name = ([attribute_name] + attribute_name_path).collect { |a| a.to_s }.sort.join('_')
 
       scope_constraint = ScopeConstraint.new(name, attribute_name, attribute_name_path, options, &block)
 
@@ -571,14 +584,14 @@ module Domgen
 
     # Assume single column pk
     def primary_key
-      primary_key = attributes.find {|a| a.primary_key? }
-      error("Unable to locate primary key for #{self.name}, attributes => #{attributes.collect{|a|a.name}}") unless primary_key
+      primary_key = attributes.find { |a| a.primary_key? }
+      error("Unable to locate primary key for #{self.name}, attributes => #{attributes.collect { |a| a.name }}") unless primary_key
       primary_key
     end
 
     def attribute_by_name(name)
       attribute = @attributes[name.to_s]
-      error("Unable to find attribute named #{name} on type #{self.name}. Available attributes = #{attributes.collect{|a|a.name}.join(', ')}") unless attribute
+      error("Unable to find attribute named #{name} on type #{self.name}. Available attributes = #{attributes.collect { |a| a.name }.join(', ')}") unless attribute
       attribute
     end
 
@@ -589,7 +602,7 @@ module Domgen
     private
 
     def attribute_names_to_key(attribute_names)
-      attribute_names.collect{|a|attribute_by_name(a).name.to_s}.sort.join('_')
+      attribute_names.collect { |a| attribute_by_name(a).name.to_s }.sort.join('_')
     end
   end
 
@@ -615,20 +628,20 @@ module Domgen
       pre_object_type_create(name)
       if options[:extends]
         base_type = object_type_by_name(options[:extends])
-        base_type.instance_variable_set("@parent",nil)
+        base_type.instance_variable_set("@parent", nil)
         object_type = Marshal.load(Marshal.dump(base_type))
-        base_type.instance_variable_set("@parent",self)
-        object_type.instance_variable_set("@abstract",nil)
-        object_type.instance_variable_set("@final",nil)
-        object_type.instance_variable_set("@parent",self)
-        object_type.instance_variable_set("@direct_subtypes",[])
-        object_type.instance_variable_set("@name",name)
+        base_type.instance_variable_set("@parent", self)
+        object_type.instance_variable_set("@abstract", nil)
+        object_type.instance_variable_set("@final", nil)
+        object_type.instance_variable_set("@parent", self)
+        object_type.instance_variable_set("@direct_subtypes", [])
+        object_type.instance_variable_set("@name", name)
         object_type.options = options
 
-        object_type.attributes.each {|a| a.mark_as_inherited}
-        object_type.unique_constraints.each {|a| a.mark_as_inherited}
-        object_type.codependent_constraints.each {|a| a.mark_as_inherited}
-        object_type.incompatible_constraints.each {|a| a.mark_as_inherited}
+        object_type.attributes.each { |a| a.mark_as_inherited }
+        object_type.unique_constraints.each { |a| a.mark_as_inherited }
+        object_type.codependent_constraints.each { |a| a.mark_as_inherited }
+        object_type.incompatible_constraints.each { |a| a.mark_as_inherited }
         object_type.extension_point(:post_inherited)
         base_type.direct_subtypes << object_type
         register_object_type(name, object_type)
@@ -669,16 +682,47 @@ module Domgen
     end
   end
 
+  class ModelCheck < BaseConfigElement
+    attr_reader :schema_set
+    attr_reader :name
+    attr_accessor :check
+
+    def initialize(schema_set, name, options = {}, &block)
+      @schema_set = schema_set
+      schema_set.send :register_model_check, name, self
+      @name = name
+      Logger.info "Model Check '#{name}' definition started"
+      super(options, &block)
+      raise "Model Check '#{name}' defines no check." unless @check
+      Logger.info "Model Check '#{name}' definition completed"
+    end
+
+    def check_model
+      begin
+        @check.call(self.schema_set)
+      rescue
+        Logger.error "Model Check '#{name}' failed."
+        raise
+      end
+    end
+  end
+
   class SchemaSet < BaseGeneratableElement
     attr_reader :name
 
     def initialize(name, options = {}, &block)
       @name = name
       @schemas = Domgen::OrderedHash.new
+      @model_checks = Domgen::OrderedHash.new
       Domgen.send :register_schema_set, name, self
       Logger.info "SchemaSet definition started"
       super(nil, options, &block)
       post_schema_set_definition
+      Logger.info "Model Checking started."
+      @model_checks.values.each do |model_check|
+        model_check.check_model
+      end
+      Logger.info "Model Checking completed."
       Logger.info "SchemaSet definition completed"
       Domgen.schema_sets << self
     end
@@ -697,10 +741,18 @@ module Domgen
       schema
     end
 
+    def define_model_check(name, options = {}, &block)
+      Domgen::ModelCheck.new(self, name, options, &block)
+    end
+
     private
 
     def register_schema(name, schema)
       @schemas[name.to_s] = schema
+    end
+
+    def register_model_check(name, model_check)
+      @model_checks[name.to_s] = model_check
     end
 
     def post_schema_set_definition
@@ -712,7 +764,7 @@ module Domgen
               other_object_types = [attribute.referenced_object]
               while !other_object_types.empty?
                 other_object_type = other_object_types.pop
-                other_object_type.direct_subtypes.each {|st| other_object_types << st }
+                other_object_type.direct_subtypes.each { |st| other_object_types << st }
                 other_object_type.referencing_attributes << attribute
               end
             end
@@ -721,7 +773,7 @@ module Domgen
       end
       # generate lists of subtypes for object types
       self.schemas.each do |schema|
-        schema.object_types.select{|object_type| !object_type.final?}.each do |object_type|
+        schema.object_types.select { |object_type| !object_type.final? }.each do |object_type|
           subtypes = object_type.subtypes
           to_process = [object_type]
           completed = []

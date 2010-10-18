@@ -154,8 +154,8 @@ JAVA
 
   public void set#{name}( final #{type} value )
   {
-#{j_return_if_value_same(name,attribute.java.primitive?,attribute.nullable?)}
-     #{name} = value;
+#{j_return_if_value_same(name, attribute.java.primitive?, attribute.nullable?)}
+        #{name} = value;
   }
 JAVA
       end
@@ -215,9 +215,9 @@ JAVA
 
   public void set#{name}( final #{type} value )
   {
- #{j_return_if_value_same(name,attribute.referenced_object.primary_key.java.primitive?,attribute.nullable?)}
-#{j_remove_from_inverse(attribute)}
-    #{name} = value;
+ #{j_return_if_value_same(name, attribute.referenced_object.primary_key.java.primitive?, attribute.nullable?)}
+        #{j_remove_from_inverse(attribute)}
+        #{name} = value;
  #{j_add_to_inverse(attribute)}
   }
 JAVA
@@ -279,6 +279,16 @@ STR
       final #{object_type.java.classname} that = (#{object_type.java.classname}) o;
       return getID() != null && getID().equals( that.getID() );
     }
+  }
+
+  @Override
+  public int hashCode()
+  {
+    if( getID() == null )
+    {
+      throw new IllegalStateException( "Do not attempt to use hashcode (e.g. in a set) without persisting first" );
+    }
+    return getID().hashCode();
   }
 JAVA
       end
