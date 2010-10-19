@@ -10,7 +10,7 @@ define 'tilde' do
   compile.options.target = '1.6'
   compile.options.lint = 'all'
   SLF4J = [:slf4j_api, :slf4j_jdk14, :jcl_over_slf4j]
-  compile.with :core, :jpa, :asm, :antlr, :persistence, :validation, :bval, SLF4J, :commons_lang, :commons_butils
+  compile.with :core, :jpa, :asm, :antlr, :persistence, :validation, :hibernate_validator, SLF4J, :commons_lang, :commons_butils
   compile.from _(:target, :generated, :java)
 
   test.using :testng
