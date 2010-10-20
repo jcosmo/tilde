@@ -1,6 +1,8 @@
 package au.com.stocksoftware.tide;
 
 import au.com.stocksoftware.tide.model.Client;
+import au.com.stocksoftware.tide.model.ClientDAO;
+import au.com.stocksoftware.tide.model.SchemaEntityManager;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -87,7 +89,7 @@ public class JpaTest
     em.close();
   }
 
-  @Test
+  @Test( dependsOnMethods = {"checkWeHaveBob"} )
   public void checkWeHaveFindAll()
   {
     // Now lets check the database and see if the created entries are there
@@ -121,6 +123,16 @@ public class JpaTest
     assertTrue( findByID.getResultList().size() == 1 );
     assertEquals( "Bob the Builder", findByID.getResultList().get(0).getName() );
 
+    em.close();
+  }
+
+  @Test(dependsOnMethods = {"checkWeHaveBob"})
+  public void testGeneratedDAOs()
+  {
+    final EntityManager em = factory.createEntityManager();
+    SchemaEntityManager.bind( em );
+    assertEquals("Bob the Builder", ClientDAO.findByID( ClientDAO.findAll().get( 0 ).getID() ).getName() );
+    SchemaEntityManager.unbind( em );
     em.close();
   }
 }
