@@ -1,7 +1,6 @@
 package au.com.stocksoftware.tide;
 
 import au.com.stocksoftware.tide.model.Client;
-import au.com.stocksoftware.tide.model.SchemaEntityManager;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -101,6 +100,26 @@ public class JpaTest
     // We should have bob!
     assertTrue( query.getResultList().size() == 1 );
     assertEquals( "Bob the Builder", query.getResultList().get(0).getName() );
+
+    em.close();
+  }
+
+  @Test(dependsOnMethods = {"checkWeHaveFindAll"})
+  public void checkWeHaveFindByID()
+  {
+    // Now lets check the database and see if the created entries are there
+    // Create a fresh, new EntityManager
+    final EntityManager em = factory.createEntityManager();
+
+    // get Bob so we can look him up
+    final TypedQuery<Client> findAll = em.createNamedQuery( "Client.findAll", Client.class );
+    final Client bob = findAll.getResultList().get( 0 );
+
+    final TypedQuery<Client> findByID = em.createNamedQuery( "Client.findByID", Client.class );
+    findByID.setParameter( "ID", bob.getID() );
+
+    assertTrue( findByID.getResultList().size() == 1 );
+    assertEquals( "Bob the Builder", findByID.getResultList().get(0).getName() );
 
     em.close();
   }
