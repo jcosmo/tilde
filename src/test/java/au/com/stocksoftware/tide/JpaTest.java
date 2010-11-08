@@ -2,7 +2,11 @@ package au.com.stocksoftware.tide;
 
 import au.com.stocksoftware.tide.model.Client;
 import au.com.stocksoftware.tide.model.ClientDAO;
+import au.com.stocksoftware.tide.model.Employee;
+import au.com.stocksoftware.tide.model.EmployeeDAO;
 import au.com.stocksoftware.tide.model.SchemaEntityManager;
+import au.com.stocksoftware.tide.model.User;
+import au.com.stocksoftware.tide.model.UserDAO;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -16,6 +20,8 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 public class JpaTest
 {
@@ -135,4 +141,53 @@ public class JpaTest
     SchemaEntityManager.unbind( em );
     em.close();
   }
+
+  /*
+  @Test(dependsOnMethods = {"checkWeHaveBob"})
+  public void testOneToOne()
+  {
+    final EntityManager em = factory.createEntityManager();
+    SchemaEntityManager.bind( em );
+
+    final Employee emp = new Employee();
+    emp.setName( "Emp1" );
+    emp.setEmail( "fake" );
+
+    // Should be persistable without a User
+    em.persist( emp );
+    em.getTransaction().commit();
+    em.getTransaction().begin();
+
+    System.out.println( "emp:id " + emp.getID() );
+    Employee loadedEmp = EmployeeDAO.findByID( emp.getID() );
+    assertNotNull( loadedEmp );
+    assertNull( loadedEmp.getUser() );
+
+    final User user = new User();
+    user.setName( "User1" );
+    user.setPassword( "pass" );
+
+    // Should be persistable without an Empl
+    em.persist( user );
+    em.getTransaction().commit();
+    em.getTransaction().begin();
+    User loadedUser = UserDAO.findByID( user.getID() );
+    assertNotNull( loadedUser );
+    assertNull( loadedUser.getEmployee() );
+
+    user.setEmployee( emp );
+    em.persist( user );
+    em.getTransaction().commit();
+
+    loadedUser = UserDAO.findByID( user.getID() );
+    loadedEmp = EmployeeDAO.findByID( emp.getID() );
+
+    assertEquals( loadedEmp, loadedUser.getEmployee() );
+    assertEquals( loadedUser, loadedEmp.getUser() );
+    assertEquals( user, emp.getUser() );
+    
+    SchemaEntityManager.unbind( em );
+    em.close();
+  }
+  */
 }

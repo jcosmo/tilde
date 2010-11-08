@@ -305,6 +305,14 @@ module Domgen
       @inverse_relationship_name
     end
 
+    attr_writer :relationship_type
+
+    def relationship_type
+      error("relationship_type on #{name} is invalid as attribute is not a reference") unless reference?
+      @relationship_type = :has_many if @inverse_relationship_type.nil?
+      @relationship_type
+    end
+
     def on_update=(on_update)
       error("on_update on #{name} is invalid as attribute is not a reference") unless reference?
       error("on_update #{on_update} on #{name} is invalid") unless self.class.change_actions.include?(on_update)

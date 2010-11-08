@@ -25,4 +25,6 @@ define 'tilde' do
       :manifest => { 'Class-Path' => artifacts(compile.dependencies).map{|art| art.name.split(/\//)[-1]}.join(' '),
                      'Main-Class' => 'Main'}
     )
+
+  package(:war)
 end

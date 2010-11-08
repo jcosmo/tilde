@@ -24,7 +24,11 @@ module Domgen
           s << "  @GeneratedValue( strategy = GenerationType.IDENTITY )\n" if attribute.generated_value?
 
           if attribute.reference?
-            s << "  @ManyToOne( optional = #{attribute.nullable?} )\n"
+            if attribute.relationship_type == :has_one
+              s << "  @OneToOne( optional = #{attribute.nullable?} )\n"
+            else
+              s << "  @ManyToOne( optional = #{attribute.nullable?} )\n"
+            end
             s << "  @JoinColumn( name = \"#{attribute.sql.column_name}\", nullable = #{attribute.nullable?}, updatable = #{!attribute.immutable?} )\n"
           else
             s << "  @Column( name = \"#{attribute.sql.column_name}\""
